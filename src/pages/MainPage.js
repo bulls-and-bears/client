@@ -38,7 +38,7 @@ function MainPage() {
 				</Section>
 
 				<Grid>
-					<img style={{ padding: '100px 0px 0px 80px', width: 680, height: 600 }} src={mainIcon} alt='Main Icon' />
+					<img style={{ padding: '100px 0px 0px 80px', width: 690, height: 600 }} src={mainIcon} alt='Main Icon' />
 				</Grid>
 			</Grid>
 		</>
