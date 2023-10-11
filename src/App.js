@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import PortfolioPage from './pages/PortfolioPage';
 import MainPage from './pages/MainPage.js';
 import { createGlobalStyle } from 'styled-components';
 
@@ -16,9 +17,9 @@ const GlobalStyle = createGlobalStyle`
 function App() {
 	return (
 		<BrowserRouter>
-			<GlobalStyle />
 			<Routes>
 				<Route path='/' element={<MainPage />} />
+				<Route path='/portfolio' element={<PortfolioPage />} />
 			</Routes>
 		</BrowserRouter>
 	);
