@@ -35,8 +35,8 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='period-label'>기간</InputLabel>
 								<Select labelId='period-label' id='period' value={period} label='Period' onChange={periodChange}>
-									<MenuItem value={10}>분기</MenuItem>
-									<MenuItem value={20}>반기</MenuItem>
+									<MenuItem value={10}>2개월</MenuItem>
+									<MenuItem value={20}>6개월</MenuItem>
 									<MenuItem value={30}>1년</MenuItem>
 								</Select>
 							</FormControl>
@@ -56,7 +56,7 @@ function PortfolioPage() {
 					</div>
 				</LeftContainer>
 				<RightContainer>
-					<div style={{ color: '#58606d' }}>자산과 기간을 입력하여, 배당주 포트포리오를 확인해보세요</div>
+					<div style={{ color: '#58606d' }}>자산과 기간을 입력하여, 배당주 포트포리오를 확인해보세요.</div>
 				</RightContainer>
 			</Grid>
 		</>
