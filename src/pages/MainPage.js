@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, styled, Button } from '@mui/material';
 import background from '../images/background.svg';
 import mainIcon from '../images/imageIcon.png';
 
 function MainPage() {
+	const navigate = useNavigate();
+
+	const onClickStart = () => {
+		navigate('/portfolio');
+	};
+
 	return (
 		<>
 			<Grid
@@ -30,7 +37,8 @@ function MainPage() {
 								'&:hover': {
 									background: '#fff',
 								},
-							}}>
+							}}
+							onClick={onClickStart}>
 							시작하기
 						</MainButton>
 						<MainButton sx={{ color: '#fff', border: '1px solid #fff' }}>로그인하기</MainButton>

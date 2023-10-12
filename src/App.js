@@ -11,12 +11,14 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         padding: 0;
         font-family: 'Noto Sans', sans-serif;
-    }
+		background: #f5f5f5;
+	}
 
 `;
 function App() {
 	return (
 		<BrowserRouter>
+			<GlobalStyle />
 			<Routes>
 				<Route path='/' element={<MainPage />} />
 				<Route path='/portfolio' element={<PortfolioPage />} />
