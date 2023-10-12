@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Grid, styled, MenuItem, FormControl, Select, InputLabel, Button } from '@mui/material';
+import Header from '../components/Header';
 
 function PortfolioPage() {
 	const [asset, setAsset] = useState('');
@@ -15,6 +16,7 @@ function PortfolioPage() {
 
 	return (
 		<>
+			<Header />
 			<Grid sx={{ display: 'flex', flexDirection: 'row', margin: '110px 100px 40px 100px' }}>
 				<LeftContainer>
 					<Grid sx={{ fontSize: 20, fontWeight: 600 }}>신규 포트폴리오 입력</Grid>
