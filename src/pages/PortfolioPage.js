@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, styled, MenuItem, FormControl, Select, InputLabel, Button } from '@mui/material';
 import Header from '../components/Header';
 
 function PortfolioPage() {
 	const [asset, setAsset] = useState('');
 	const [period, setPeriod] = useState('');
+	const navigate = useNavigate();
 
+	const onClickResult = () => {
+		navigate('/result');
+	};
 	const assetChange = (event) => {
 		setAsset(event.target.value);
 	};
@@ -52,7 +57,8 @@ function PortfolioPage() {
 								'&:hover': {
 									background: '#3671ba',
 								},
-							}}>
+							}}
+							onClick={onClickResult}>
 							조회하기
 						</Button>
 					</div>
