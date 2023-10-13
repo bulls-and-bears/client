@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Grid, styled, Button } from '@mui/material';
 import Header from '../components/Header';
 import ApexCharts from 'react-apexcharts';
-import { SyncLoader } from 'react-spinners';
+import { BeatLoader } from 'react-spinners';
 import axios from 'axios';
 
 function ResultPage() {
@@ -76,7 +76,7 @@ function ResultPage() {
 			<Header />
 			{loading ? (
 				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-					<SyncLoader color='#3f51b5' loading={loading} size={20} />
+					<BeatLoader color='#3f51b5' loading={loading} size={20} />
 				</div>
 			) : (
 				<>
