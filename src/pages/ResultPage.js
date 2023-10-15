@@ -70,7 +70,12 @@ function ResultPage() {
 			chart: { type: 'line', zoom: { enabled: false } },
 			dataLabels: { enabled: false },
 			stroke: { curve: 'straight' },
-			title: { text: stockName },
+			title: {
+				text: stockName,
+				align: 'center',
+				offsetX: 0,
+				offsetY: 302,
+			},
 			tooltip: {
 				enabled: true,
 				intersect: false,
