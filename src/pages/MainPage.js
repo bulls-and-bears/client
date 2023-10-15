@@ -3,45 +3,50 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Grid, styled, Button } from '@mui/material';
 import background from '../images/background.svg';
 import mainIcon from '../images/imageIcon.png';
-import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 function MainPage() {
 	const navigate = useNavigate();
-	const onClickStart = () => {
+
+	const onClickStart = async () => {
+		//const res = await axios.get("http://localhost:8080/test");
 		navigate('/portfolio');
 	};
-	// const sendTokenToServer = async (access_token) => {
-	// 	try {
-	// 		const response = await axios.post('http://localhost:8080/oauth/info', { token: access_token });
-	// 		console.log(response.data);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// };
+	const Login = async () => {
+		window.location.href = "http://localhost:8080/oauth2/authorization/google";
+	};
+	const AuthTest = async () => {
+		try {
+			await axios.get("http://localhost:8080/oauth/test", { withCredentials: true });
+			console.log("인증 성공");
+		} catch (err) {
+			console.log(err);
+		}
+	};
+	const GetTokenTest = async () => {
+		try {
+			// 현재 URL에서 쿼리 파라미터를 가져옵니다.
+			const urlParams = new URLSearchParams(window.location.search);
 
-	// const location = useLocation();
+			// 쿼리 파라미터에서 accessToken, refreshToken, name을 추출합니다.
+			const accessToken = urlParams.get('accessToken');
+			const refreshToken = urlParams.get('refreshToken');
+			const name = urlParams.get('name');
 
-	// const Login = useGoogleLogin({
-	// 	onSuccess: (tokenResponse) => {
-	// 		console.log(tokenResponse);
-	// 		const { access_token } = tokenResponse;
-	// 		sendTokenToServer(access_token);
-	// 	},
-	// });
+			// 추출한 값을 쿠키에 저장합니다.
+			document.cookie = `accessToken=${accessToken}; path=/`;
+			document.cookie = `refreshToken=${refreshToken}; path=/`;
+			document.cookie = `name=${name}; path=/`;
 
-	// useEffect(() => {
-	// 	const query = new URLSearchParams(location.search);
-	// 	const token = query.get('token');
+			console.log("accessToken:", accessToken);
+			console.log("refreshToken:", refreshToken);
+			console.log("name:", name);
 
-	// 	console.log('token', token);
-
-	// 	if (token) {
-	// 		sendTokenToServer(token);
-	// 	}
-
-	// 	navigate('/');
-	// }, [navigate, location.search]);
+			navigate("/");
+		} catch (err) {
+			console.log(err);
+		}
+	};
 
 	return (
 		<>
@@ -73,7 +78,9 @@ function MainPage() {
 							onClick={onClickStart}>
 							시작하기
 						</MainButton>
-						<StyledButton>로그인하기</StyledButton>
+						<StyledButton onClick={() => Login()}>로그인하기</StyledButton>
+						<StyledButton onClick={() => AuthTest()}>인증 TEST</StyledButton>
+						<StyledButton onClick={() => GetTokenTest()}>토큰 가져오기 TEST</StyledButton>
 					</div>
 				</Section>
 
