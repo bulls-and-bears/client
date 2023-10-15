@@ -1,33 +1,47 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Grid, styled, Button } from '@mui/material';
 import background from '../images/background.svg';
 import mainIcon from '../images/imageIcon.png';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
-// const sendTokenToServer = async (access_token) => {
-// 	try {
-// 		const response = await axios.post('http://localhost:8080', { token: access_token });
-// 		console.log(response.data);
-// 	} catch (error) {
-// 		console.error(error);
-// 	}
-// };
-
 function MainPage() {
 	const navigate = useNavigate();
-
 	const onClickStart = () => {
 		navigate('/portfolio');
 	};
-	const Login = useGoogleLogin({
-		onSuccess: (tokenResponse) => {
-			console.log(tokenResponse);
-			// const { access_token } = tokenResponse;
-			// sendTokenToServer(access_token);
-		},
-	});
+	// const sendTokenToServer = async (access_token) => {
+	// 	try {
+	// 		const response = await axios.post('http://localhost:8080/oauth/info', { token: access_token });
+	// 		console.log(response.data);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// };
+
+	// const location = useLocation();
+
+	// const Login = useGoogleLogin({
+	// 	onSuccess: (tokenResponse) => {
+	// 		console.log(tokenResponse);
+	// 		const { access_token } = tokenResponse;
+	// 		sendTokenToServer(access_token);
+	// 	},
+	// });
+
+	// useEffect(() => {
+	// 	const query = new URLSearchParams(location.search);
+	// 	const token = query.get('token');
+
+	// 	console.log('token', token);
+
+	// 	if (token) {
+	// 		sendTokenToServer(token);
+	// 	}
+
+	// 	navigate('/');
+	// }, [navigate, location.search]);
 
 	return (
 		<>
@@ -59,7 +73,7 @@ function MainPage() {
 							onClick={onClickStart}>
 							시작하기
 						</MainButton>
-						<StyledButton onClick={() => Login()}>로그인하기</StyledButton>
+						<StyledButton>로그인하기</StyledButton>
 					</div>
 				</Section>
 
