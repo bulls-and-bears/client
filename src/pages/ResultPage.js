@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { Grid, styled, Button } from '@mui/material';
+import { Grid, styled, Button, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 import Header from '../components/Header';
 import ApexCharts from 'react-apexcharts';
 import { BeatLoader } from 'react-spinners';
@@ -13,83 +13,91 @@ function ResultPage() {
 	const [loading, setLoading] = useState(true);
 	const location = useLocation();
 	const { asset, period } = location.state || {};
+	const stockNames = ['삼성전자', 'SK하이닉스', 'LG디스플레이'];
+
 	useEffect(() => {
-		const fetchData = () => {
+		const fetchData = async () => {
 			setLoading(true);
-			axios
-				.get('https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo', {
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					params: {
-						serviceKey: '3D/hQQLa34EIssXyL96d8sUQaCs5YuG/Gqlvn59ggFLbbD138P/nxryTicBJXMnZHLtf74JrS/07XQNMjLqdbQ==',
-						numOfRows: '247',
-						pageNo: '1',
-						beginBasDt: '20221013',
-						endBasDt: '20231013',
-						resultType: 'json',
-						itmsNm: '삼성전자',
-					},
-				})
-				.then((response) => {
-					console.log(response.data);
-					setStockData(response.data.response.body.items.item[0]);
-
-					const prices = response.data.response.body.items.item.map((item) => parseInt(item.clpr, 10));
-					const dates = response.data.response.body.items.item.map((item) => {
-						const year = item.basDt.substring(2, 4);
-						const month = item.basDt.substring(4, 6);
-						const day = item.basDt.substring(6, 8);
-						return `${year}년 ${month}월 ${day}일`;
-					});
-					const xaxisDates = dates.map((date) => {
-						return date.substring(0, date.length - 4);
-					});
-
-					const reversedDates = dates.reverse();
-					const reversedXaxisDates = xaxisDates.reverse();
-
-					setSeries([{ name: '삼성전자', data: prices.reverse() }]);
-					setOptions({
-						chart: { type: 'line', zoom: { enabled: false } },
-						dataLabels: { enabled: false },
-						stroke: { curve: 'straight' },
-						title: { text: '' },
-						tooltip: {
-							enabled: true,
-							intersect: false,
-							x: {
-								formatter: function (index) {
-									return reversedDates[index - 1];
-								},
+			try {
+				const responses = await Promise.all(
+					stockNames.map((stockName) =>
+						axios.get('https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo', {
+							headers: {
+								'Content-Type': 'application/json',
 							},
-							y: {
-								formatter: function (value) {
-									return value + ' 원';
-								},
+							params: {
+								serviceKey: '3D/hQQLa34EIssXyL96d8sUQaCs5YuG/Gqlvn59ggFLbbD138P/nxryTicBJXMnZHLtf74JrS/07XQNMjLqdbQ==',
+								numOfRows: '247',
+								pageNo: '1',
+								beginBasDt: '20221013',
+								endBasDt: '20231013',
+								resultType: 'json',
+								itmsNm: stockName,
 							},
-						},
-						grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } },
-						xaxis: {
-							categories: reversedXaxisDates,
-							tickAmount: 11,
-						},
-					});
-					setLoading(false);
-				})
-				.catch((error) => {
-					console.log(error);
-					setLoading(false);
-				});
+						}),
+					),
+				);
+
+				setStockData(responses);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
 		};
 		fetchData();
 	}, []);
 
-	const rows = [
-		{ name: '삼성전자', price: '68,900', rate: '+1.03%' },
-		{ name: 'SK하이닉스', price: '124,200', rate: '+4.40%' },
-		{ name: 'LG디스플레이', price: '12,490', rate: '-0.72%' },
-	];
+	useEffect(() => {
+		if (stockData) {
+			stockData.map((item, index) => {
+				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].itmsNm);
+				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].clpr);
+				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].fltRt);
+			});
+		}
+	}, [stockData]);
+
+	const handleTableClick = (data) => {
+		const prices = data.data.response.body.items.item.map((item) => parseInt(item.clpr, 10));
+		const dates = data.data.response.body.items.item.map((item) => {
+			const year = item.basDt.substring(2, 4);
+			const month = item.basDt.substring(4, 6);
+			const day = item.basDt.substring(6, 8);
+			return `${year}년 ${month}월 ${day}일`;
+		});
+
+		const xaxisDates = dates.map((date) => date.substring(0, date.length - 4));
+		const stockName = data.data.response.body.items.item[0].itmsNm;
+
+		setSeries([{ name: stockName, data: prices.reverse() }]);
+		setOptions({
+			chart: { type: 'line', zoom: { enabled: false } },
+			dataLabels: { enabled: false },
+			stroke: { curve: 'straight' },
+			title: { text: stockName },
+			tooltip: {
+				enabled: true,
+				intersect: false,
+				x: {
+					formatter: function (index) {
+						return dates[index - 1];
+					},
+				},
+				y: {
+					formatter: function (value) {
+						return value + ' 원';
+					},
+				},
+			},
+			grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } },
+			xaxis: {
+				categories: xaxisDates.reverse(),
+				tickAmount: 11,
+				title: stockName,
+			},
+		});
+	};
 
 	return (
 		<>
@@ -126,22 +134,41 @@ function ResultPage() {
 								<Button sx={ButtonStyle}>더보기</Button>
 							</Grid>
 							<div style={{ maxHeight: '190px', overflowY: 'auto', marginTop: '8px' }}>
-								<table style={{ width: '100%', borderCollapse: 'collapse' }}>
-									<thead>
-										<tr>
-											<th style={TableStyle}>종목</th>
-											<th style={TableStyle}>현재가</th>
-											<th style={TableStyle}>등락률</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td style={{ borderBottom: '1px solid #eee', padding: '16px' }}>{stockData.itmsNm}</td>
-											<td style={{ borderBottom: '1px solid #eee', padding: '16px', textAlign: 'right' }}>{stockData.clpr}</td>
-											<td style={{ borderBottom: '1px solid #eee', padding: '16px', textAlign: 'right' }}>{stockData.fltRt}</td>
-										</tr>
-									</tbody>
-								</table>
+								<Table sx={{ minWidth: 650 }} aria-label='stock table'>
+									<TableHead>
+										<TableRow sx={{ fontWeight: 600 }}>
+											<TableStyle>종목</TableStyle>
+											<TableStyle align='right'>종가</TableStyle>
+											<TableStyle align='right'>등락률</TableStyle>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{stockData &&
+											stockData.map((data, index) => (
+												<TableRow
+													key={index}
+													onClick={() => handleTableClick(data)}
+													sx={{
+														cursor: 'pointer',
+														'&:hover': { backgroundColor: '#f0f0f0' },
+														'&:active': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
+													}}>
+													<TableCell>{data.data.response.body.items.item[0].itmsNm}</TableCell>
+													<TableCell align='right'>
+														{parseInt(data.data.response.body.items.item[0].clpr).toLocaleString('ko-KR')}원
+													</TableCell>
+													<TableCell
+														align='right'
+														style={{
+															color: parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? 'red' : 'blue',
+														}}>
+														{parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? '+' : ''}
+														{parseFloat(data.data.response.body.items.item[0].fltRt).toFixed(2)}%
+													</TableCell>
+												</TableRow>
+											))}
+									</TableBody>
+								</Table>
 							</div>
 						</Container>
 					</Grid>
@@ -179,11 +206,17 @@ const InputStyle = {
 	padding: '5px 11px',
 	textAlign: 'center',
 };
-
-const TableStyle = {
+const TableStyle = styled(TableCell)(() => ({
 	borderBottom: '1px solid #999',
-	padding: '16px',
 	fontWeight: 'bold',
+	fontSize: 17,
+}));
+
+const TrStyle = {
+	cursor: 'pointer',
+	'&:active': {
+		background: 'yellow',
+	},
 };
 
 const ButtonStyle = {
