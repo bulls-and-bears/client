@@ -3,6 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, styled, Button } from '@mui/material';
 import background from '../images/background.svg';
 import mainIcon from '../images/imageIcon.png';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+
+// const sendTokenToServer = async (access_token) => {
+// 	try {
+// 		const response = await axios.post('http://localhost:8080', { token: access_token });
+// 		console.log(response.data);
+// 	} catch (error) {
+// 		console.error(error);
+// 	}
+// };
 
 function MainPage() {
 	const navigate = useNavigate();
@@ -10,6 +21,13 @@ function MainPage() {
 	const onClickStart = () => {
 		navigate('/portfolio');
 	};
+	const Login = useGoogleLogin({
+		onSuccess: (tokenResponse) => {
+			console.log(tokenResponse);
+			// const { access_token } = tokenResponse;
+			// sendTokenToServer(access_token);
+		},
+	});
 
 	return (
 		<>
@@ -41,7 +59,7 @@ function MainPage() {
 							onClick={onClickStart}>
 							시작하기
 						</MainButton>
-						<MainButton sx={{ color: '#fff', border: '1px solid #fff' }}>로그인하기</MainButton>
+						<StyledButton onClick={() => Login()}>로그인하기</StyledButton>
 					</div>
 				</Section>
 
@@ -70,6 +88,13 @@ const MainButton = styled(Button)(() => ({
 	width: 120,
 	padding: '10px',
 	borderRadius: 50,
+}));
+const StyledButton = styled(Button)(() => ({
+	width: 120,
+	padding: '10px',
+	borderRadius: 50,
+	color: '#fff',
+	border: '1px solid #fff',
 }));
 
 export default MainPage;
