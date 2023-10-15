@@ -9,7 +9,7 @@ function PortfolioPage() {
 	const navigate = useNavigate();
 
 	const onClickResult = () => {
-		navigate('/result');
+		navigate('/result', { state: { asset, period } });
 	};
 	const assetChange = (event) => {
 		setAsset(event.target.value);
@@ -31,9 +31,9 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='asset-label'>자산</InputLabel>
 								<Select labelId='asset-label' id='asset' value={asset} label='Asset' onChange={assetChange}>
-									<MenuItem value={1}>100만원 이상</MenuItem>
-									<MenuItem value={2}>500만원 이상</MenuItem>
-									<MenuItem value={3}>1,000만원 이상</MenuItem>
+									<MenuItem value={'100'}>100만원 이상</MenuItem>
+									<MenuItem value={'500'}>500만원 이상</MenuItem>
+									<MenuItem value={'1,000'}>1,000만원 이상</MenuItem>
 								</Select>
 							</FormControl>
 						</div>
@@ -42,9 +42,9 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='period-label'>기간</InputLabel>
 								<Select labelId='period-label' id='period' value={period} label='Period' onChange={periodChange}>
-									<MenuItem value={10}>2개월</MenuItem>
-									<MenuItem value={20}>6개월</MenuItem>
-									<MenuItem value={30}>1년</MenuItem>
+									<MenuItem value={2}>2개월</MenuItem>
+									<MenuItem value={6}>6개월</MenuItem>
+									<MenuItem value={12}>12개월</MenuItem>
 								</Select>
 							</FormControl>
 						</div>

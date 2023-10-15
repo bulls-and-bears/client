@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { Grid, styled, Button } from '@mui/material';
 import Header from '../components/Header';
@@ -11,7 +11,8 @@ function ResultPage() {
 	const [series, setSeries] = useState([]);
 	const [options, setOptions] = useState({});
 	const [loading, setLoading] = useState(true);
-
+	const location = useLocation();
+	const { asset, period } = location.state || {};
 	useEffect(() => {
 		const fetchData = () => {
 			setLoading(true);
@@ -38,10 +39,15 @@ function ResultPage() {
 					const dates = response.data.response.body.items.item.map((item) => {
 						const year = item.basDt.substring(2, 4);
 						const month = item.basDt.substring(4, 6);
-						return `${year}년 ${month}월`;
+						const day = item.basDt.substring(6, 8);
+						return `${year}년 ${month}월 ${day}일`;
+					});
+					const xaxisDates = dates.map((date) => {
+						return date.substring(0, date.length - 4);
 					});
 
 					const reversedDates = dates.reverse();
+					const reversedXaxisDates = xaxisDates.reverse();
 
 					setSeries([{ name: '삼성전자', data: prices.reverse() }]);
 					setOptions({
@@ -49,9 +55,23 @@ function ResultPage() {
 						dataLabels: { enabled: false },
 						stroke: { curve: 'straight' },
 						title: { text: '' },
+						tooltip: {
+							enabled: true,
+							intersect: false,
+							x: {
+								formatter: function (index) {
+									return reversedDates[index - 1];
+								},
+							},
+							y: {
+								formatter: function (value) {
+									return value + ' 원';
+								},
+							},
+						},
 						grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } },
 						xaxis: {
-							categories: reversedDates,
+							categories: reversedXaxisDates,
 							tickAmount: 11,
 						},
 					});
@@ -93,11 +113,11 @@ function ResultPage() {
 							<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>나영현님의 포트폴리오</Grid>
 							<Grid sx={GridStyle}>
 								<div>보유 자산</div>
-								<div style={InputStyle}>100만원</div>
+								<div style={InputStyle}>{asset}만원 이상</div>
 							</Grid>
 							<Grid sx={GridStyle}>
 								<div>보유 기간</div>
-								<div style={InputStyle}>1년</div>
+								<div style={InputStyle}>{period}개월</div>
 							</Grid>
 						</Container>
 						<Container sx={{ width: '803px', borderRadius: '20px', padding: '20px' }}>
@@ -152,7 +172,7 @@ const InputStyle = {
 	fontSize: '17px',
 	marginTop: '-4px',
 	marginLeft: '20px',
-	width: '70px',
+	width: 'auto',
 	background: 'rgba(0, 0, 0, 0.10)',
 	color: '#7B7B7B',
 	borderRadius: '7px',
