@@ -48,16 +48,6 @@ function ResultPage() {
 		fetchData();
 	}, []);
 
-	useEffect(() => {
-		if (stockData) {
-			stockData.map((item, index) => {
-				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].itmsNm);
-				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].clpr);
-				console.log(`Data ${index + 1}:`, item.data.response.body.items.item[0].fltRt);
-			});
-		}
-	}, [stockData]);
-
 	const handleTableClick = (data) => {
 		const prices = data.data.response.body.items.item.map((item) => parseInt(item.clpr, 10));
 		const dates = data.data.response.body.items.item.map((item) => {
@@ -67,7 +57,12 @@ function ResultPage() {
 			return `${year}년 ${month}월 ${day}일`;
 		});
 
-		const xaxisDates = dates.map((date) => date.substring(0, date.length - 4));
+		const xaxisDates = dates.map((date) => {
+			return date.substring(0, date.length - 4);
+		});
+
+		const reversedDates = [...dates].reverse();
+		const reversedXaxisDates = xaxisDates.reverse();
 		const stockName = data.data.response.body.items.item[0].itmsNm;
 
 		setSeries([{ name: stockName, data: prices.reverse() }]);
@@ -81,7 +76,7 @@ function ResultPage() {
 				intersect: false,
 				x: {
 					formatter: function (index) {
-						return dates[index - 1];
+						return reversedDates[index - 1];
 					},
 				},
 				y: {
@@ -92,7 +87,7 @@ function ResultPage() {
 			},
 			grid: { row: { colors: ['#f3f3f3', 'transparent'], opacity: 0.5 } },
 			xaxis: {
-				categories: xaxisDates.reverse(),
+				categories: reversedXaxisDates,
 				tickAmount: 11,
 				title: stockName,
 			},
@@ -211,13 +206,6 @@ const TableStyle = styled(TableCell)(() => ({
 	fontWeight: 'bold',
 	fontSize: 17,
 }));
-
-const TrStyle = {
-	cursor: 'pointer',
-	'&:active': {
-		background: 'yellow',
-	},
-};
 
 const ButtonStyle = {
 	display: 'flex',
