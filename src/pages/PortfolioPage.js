@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, styled, MenuItem, FormControl, Select, InputLabel, Button } from '@mui/material';
 import Header from '../components/Header';
+import axios from 'axios';
 
 function PortfolioPage() {
-	const [asset, setAsset] = useState('');
-	const [period, setPeriod] = useState('');
+	const [amount, setAmount] = useState('');
+	const [duration, setDuration] = useState('');
+	const navigate = useNavigate();
 
-	const assetChange = (event) => {
-		setAsset(event.target.value);
+	const onClickResult = () => {
+		navigate('/result', { state: { amount, duration } });
+		axios
+			.post('/port', { amount, duration })
+			.then((response) => {
+				console.log('Success:', response.data);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	};
+	const amountChange = (event) => {
+		setAmount(event.target.value);
 	};
 
-	const periodChange = (event) => {
-		setPeriod(event.target.value);
+	const durationChange = (event) => {
+		setDuration(event.target.value);
 	};
 
 	return (
@@ -24,22 +38,22 @@ function PortfolioPage() {
 						<div style={ItemStyle}>
 							<div>보유 자산 입력</div>
 							<FormControl sx={{ width: 180 }}>
-								<InputLabel id='asset-label'>자산</InputLabel>
-								<Select labelId='asset-label' id='asset' value={asset} label='Asset' onChange={assetChange}>
-									<MenuItem value={1}>100만원 이상</MenuItem>
-									<MenuItem value={2}>500만원 이상</MenuItem>
-									<MenuItem value={3}>1,000만원 이상</MenuItem>
+								<InputLabel id='amount-label'>자산</InputLabel>
+								<Select labelId='amount-label' id='amount' value={amount} label='amount' onChange={amountChange}>
+									<MenuItem value={'100'}>100만원 이상</MenuItem>
+									<MenuItem value={'500'}>500만원 이상</MenuItem>
+									<MenuItem value={'1,000'}>1,000만원 이상</MenuItem>
 								</Select>
 							</FormControl>
 						</div>
 						<div style={ItemStyle}>
 							<div> 보유 기간 입력</div>
 							<FormControl sx={{ width: 180 }}>
-								<InputLabel id='period-label'>기간</InputLabel>
-								<Select labelId='period-label' id='period' value={period} label='Period' onChange={periodChange}>
-									<MenuItem value={10}>2개월</MenuItem>
-									<MenuItem value={20}>6개월</MenuItem>
-									<MenuItem value={30}>1년</MenuItem>
+								<InputLabel id='duration-label'>기간</InputLabel>
+								<Select labelId='duration-label' id='duration' value={duration} label='duration' onChange={durationChange}>
+									<MenuItem value={2}>2개월</MenuItem>
+									<MenuItem value={6}>6개월</MenuItem>
+									<MenuItem value={12}>12개월</MenuItem>
 								</Select>
 							</FormControl>
 						</div>
@@ -52,7 +66,8 @@ function PortfolioPage() {
 								'&:hover': {
 									background: '#3671ba',
 								},
-							}}>
+							}}
+							onClick={onClickResult}>
 							조회하기
 						</Button>
 					</div>
