@@ -12,8 +12,9 @@ function ResultPage() {
 	const [options, setOptions] = useState({});
 	const [loading, setLoading] = useState(true);
 	const location = useLocation();
+	const name = location.state?.name;
 	const { amount, duration } = location.state || {};
-	const stockNames = ['삼성전자', 'SK하이닉스', 'LG디스플레이'];
+	const stockNames = ['삼성전자', 'SK하이닉스', 'LG디스플레이', '카카오', '동국제약'];
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -118,7 +119,7 @@ function ResultPage() {
 							justifyContent: 'space-around',
 						}}>
 						<Container sx={{ width: '397px', borderRadius: '40px', padding: '30px 40px' }}>
-							<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>나영현님의 포트폴리오</Grid>
+							<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>{`${name}`}님의 최적 포트폴리오</Grid>
 							<Grid sx={GridStyle}>
 								<div>보유 자산</div>
 								<div style={InputStyle}>{amount}만원 이상</div>

@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Button, styled } from '@mui/material';
 import logo from '../images/Logo.svg';
 
 function Header() {
-	const location = useLocation();
 	const navigate = useNavigate();
-	const isActive = (path) => {
-		return location.pathname === path;
-	};
 
 	const onClickHome = () => {
-		navigate('/');
+		const name = localStorage.getItem('loggedInUserName');
+
+		if (name) {
+			navigate(`/?name=${encodeURIComponent(name)}&fromHomeButton=true`);
+		} else {
+			navigate('/');
+		}
 	};
 
 	const onClickPortfolio = () => {
@@ -36,9 +37,7 @@ function Header() {
 					}}>
 					<ItemButton>Dashboard</ItemButton>
 					<ItemButton>보유 종목</ItemButton>
-					<ItemButton active={isActive('/portfolio')} onClick={onClickPortfolio}>
-						포트폴리오 확인하기
-					</ItemButton>
+					<ItemButton onClick={onClickPortfolio}>포트폴리오 확인하기</ItemButton>
 					<ItemButton>배당 순위</ItemButton>
 					<ItemButton>오늘의 주가</ItemButton>
 				</Grid>
@@ -47,10 +46,9 @@ function Header() {
 	);
 }
 
-const ItemButton = styled(Button)(({ theme, active }) => ({
-	color: active ? '#3671BA' : '#4e4e4e',
-	fontWeight: active ? 600 : 400,
-	borderBottom: active ? '5px solid #3671ba' : 'none',
+const ItemButton = styled(Button)(({}) => ({
+	fontWeight: 400,
+	borderBottom: 'none',
 }));
 
 export default Header;
