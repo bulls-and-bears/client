@@ -12,7 +12,7 @@ function ResultPage() {
 	const [options, setOptions] = useState({});
 	const [loading, setLoading] = useState(true);
 	const location = useLocation();
-	const { asset, period } = location.state || {};
+	const { amount, duration } = location.state || {};
 	const stockNames = ['삼성전자', 'SK하이닉스', 'LG디스플레이'];
 
 	useEffect(() => {
@@ -121,11 +121,11 @@ function ResultPage() {
 							<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>나영현님의 포트폴리오</Grid>
 							<Grid sx={GridStyle}>
 								<div>보유 자산</div>
-								<div style={InputStyle}>{asset}만원 이상</div>
+								<div style={InputStyle}>{amount}만원 이상</div>
 							</Grid>
 							<Grid sx={GridStyle}>
 								<div>보유 기간</div>
-								<div style={InputStyle}>{period}개월</div>
+								<div style={InputStyle}>{duration}개월</div>
 							</Grid>
 						</Container>
 						<Container sx={{ width: '803px', borderRadius: '20px', padding: '20px' }}>
