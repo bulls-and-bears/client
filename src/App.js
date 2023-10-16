@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import PortfolioPage from './pages/PortfolioPage';
 import MainPage from './pages/MainPage.js';
 import { createGlobalStyle } from 'styled-components';
+import AdminPage from './pages/AdminPage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -22,6 +23,7 @@ function App() {
 			<Routes>
 				<Route path='/' element={<MainPage />} />
 				<Route path='/portfolio' element={<PortfolioPage />} />
+				<Route path='/admin' element={<AdminPage />} />
 			</Routes>
 		</BrowserRouter>
 	);
