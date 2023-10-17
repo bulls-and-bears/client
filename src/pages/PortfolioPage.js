@@ -20,20 +20,6 @@ function PortfolioPage() {
 		navigate('/result', { state: { reportId } });
 	};
 
-	// const postToBackend = () => {
-	// 	axios
-	// 		.post('api/v1/report/', { amount, duration }, { withCredentials: true })
-	// 		.then((response) => {
-	// 			console.log('Success:', response);
-
-	// 			console.log(response.data.reportId);
-	// 			console.log(response.data.totalDividend);
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error('Error:', error);
-	// 		});
-
-	// };
 	const postToBackend = async () => {
 		try {
 			const response = await axios.post('api/v1/report/', { amount, duration }, { withCredentials: true });
@@ -41,6 +27,7 @@ function PortfolioPage() {
 			console.log('Success:', response);
 			console.log(response.data.reportId);
 			console.log(response.data.totalDividend);
+			setReportId(response.data.reportId);
 		} catch (error) {
 			console.error('Error:', error);
 		}
