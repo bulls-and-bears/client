@@ -15,24 +15,22 @@ function PortfolioPage() {
 	const [reportId, setReportId] = useState(null);
 	const [totalDividend, setTotalDividend] = useState();
 
-	const onClickResult = async () => {
-		if (!reportId) {
-			console.error('reportId is not yet set.');
-			navigate('/result');
-		}
-
-		try {
-			let response = await axios.get(`http://localhost:8080/api/v1/report/${reportId}`);
-			let reportIDFromResponse = response.data.reportId;
-			navigate('/result', { state: { reportID: reportIDFromResponse, amount, duration, name: name } });
-		} catch (error) {
-			console.error('Error fetching reportID:', error);
-		}
-	};
+	// const onClickResult = async () => {
+	// 	axios
+	// 		.post('api/v1/report/', { amount, duration }, { withCredentials: true })
+	// 		.then((response) => {
+	// 			console.log(response);
+	// 			console.log(response.data.reportId);
+	// 			console.log(response.data.totalDividend);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error);
+	// 		});
+	// };
 
 	const postToBackend = () => {
 		axios
-			.post('http://localhost:8080/api/v1/report/', { amount, duration }, { withCredentials: true })
+			.post('api/v1/report/', { amount, duration }, { withCredentials: true })
 			.then((response) => {
 				console.log('Success:', response.data);
 				setReportId(response.data.reportId);
@@ -58,19 +56,18 @@ function PortfolioPage() {
 		setAmount(selectedAmount);
 
 		switch (selectedAmount) {
-			case 100:
+			case 1000000:
 				setAmountLabel('100만원');
 				break;
-			case 500:
+			case 5000000:
 				setAmountLabel('500만원');
 				break;
-			case 1000:
+			case 10000000:
 				setAmountLabel('1,000만원');
 				break;
 			default:
 				setAmountLabel('금액');
 		}
-		postToBackend();
 	};
 
 	const durationChange = (event) => {
@@ -78,19 +75,24 @@ function PortfolioPage() {
 		setDuration(selectedIndex);
 
 		switch (selectedIndex) {
-			case 0:
+			case 2:
 				setDurationLabel('2개월');
 				break;
-			case 1:
+			case 4:
+				setDurationLabel('4개월');
+				break;
+			case 6:
 				setDurationLabel('6개월');
 				break;
-			case 2:
-				setDurationLabel('1년');
+			case 8:
+				setDurationLabel('8개월');
+				break;
+			case 10:
+				setDurationLabel('10개월');
 				break;
 			default:
 				setDurationLabel('날짜');
 		}
-		postToBackend();
 	};
 
 	return (
@@ -105,9 +107,9 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='amount-label'>자산</InputLabel>
 								<Select labelId='amount-label' id='amount' value={amount} label='amount' onChange={amountChange}>
-									<MenuItem value={100}>100만원</MenuItem>
-									<MenuItem value={500}>500만원</MenuItem>
-									<MenuItem value={1000}>1,000만원</MenuItem>
+									<MenuItem value={1000000}>100만원</MenuItem>
+									<MenuItem value={5000000}>500만원</MenuItem>
+									<MenuItem value={10000000}>1,000만원</MenuItem>
 								</Select>
 							</FormControl>
 						</div>
@@ -116,9 +118,11 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='duration-label'>기간</InputLabel>
 								<Select labelId='duration-label' id='duration' value={duration} label='duration' onChange={durationChange}>
-									<MenuItem value={0}>2개월</MenuItem>
-									<MenuItem value={1}>6개월</MenuItem>
-									{/* <MenuItem value={2}>1년</MenuItem> */}
+									<MenuItem value={2}>2개월</MenuItem>
+									<MenuItem value={4}>4개월</MenuItem>
+									<MenuItem value={6}>6개월</MenuItem>
+									<MenuItem value={8}>8개월</MenuItem>
+									<MenuItem value={10}>10개월</MenuItem>
 								</Select>
 							</FormControl>
 						</div>
@@ -132,7 +136,8 @@ function PortfolioPage() {
 									background: '#3671ba',
 								},
 							}}
-							onClick={onClickResult}>
+							// onClick={onClickResult}
+						>
 							조회하기
 						</Button>
 					</div>
