@@ -4,6 +4,8 @@ import PortfolioPage from './pages/PortfolioPage';
 import MainPage from './pages/MainPage.js';
 import { createGlobalStyle } from 'styled-components';
 import ResultPage from './pages/ResultPage';
+import SimulationPage from './pages/SimulationPage';
+import IssuePage from './pages/IssuePage';
 
 const GlobalStyle = createGlobalStyle`
 
@@ -24,6 +26,8 @@ function App() {
 				<Route path='/' element={<MainPage />} />
 				<Route path='/portfolio' element={<PortfolioPage />} />
 				<Route path='/result' element={<ResultPage />} />
+				<Route path='/simulate' element={<SimulationPage />} />
+				<Route path='/issue' element={<IssuePage />} />
 			</Routes>
 		</BrowserRouter>
 	);

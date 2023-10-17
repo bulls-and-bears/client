@@ -7,7 +7,6 @@ function Header() {
 
 	const onClickHome = () => {
 		const name = localStorage.getItem('loggedInUserName');
-
 		if (name) {
 			navigate(`/?name=${encodeURIComponent(name)}&fromHomeButton=true`);
 		} else {
@@ -17,6 +16,12 @@ function Header() {
 
 	const onClickPortfolio = () => {
 		navigate('/portfolio');
+	};
+	const onClickSimulate = () => {
+		navigate('/simulate');
+	};
+	const onClickIssue = () => {
+		navigate('/issue');
 	};
 
 	return (
@@ -35,11 +40,9 @@ function Header() {
 						justifyContent: 'flex-end',
 						gap: 2,
 					}}>
-					<ItemButton>Dashboard</ItemButton>
-					<ItemButton>보유 종목</ItemButton>
 					<ItemButton onClick={onClickPortfolio}>포트폴리오 확인하기</ItemButton>
-					<ItemButton>배당 순위</ItemButton>
-					<ItemButton>오늘의 주가</ItemButton>
+					<ItemButton onClick={onClickSimulate}>시뮬레이션</ItemButton>
+					<ItemButton onClick={onClickIssue}>오늘의 이슈</ItemButton>
 				</Grid>
 			</div>
 		</>
@@ -49,6 +52,7 @@ function Header() {
 const ItemButton = styled(Button)(({}) => ({
 	fontWeight: 400,
 	borderBottom: 'none',
+	color: '#58606d',
 }));
 
 export default Header;
