@@ -19,47 +19,53 @@ function ResultPage() {
 	const stockNames = ['삼성전자', 'SK하이닉스', 'LG디스플레이', '카카오', '동국제약'];
 
 	useEffect(() => {
-		setLoading(true);
-		console.log('Report ID:', reportId);
+		const fetchReportData = async () => {
+			try {
+				const response = await axios.get(`api/v1/report/${reportId}`);
+				console.log(response.data);
+				// setReportData(response.data);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		const fetchData = async () => {
+			setLoading(true);
+
+			try {
+				const responses = await Promise.all(
+					stockNames.map((stockName) =>
+						axios.get('https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo', {
+							headers: {
+								'Content-Type': 'application/json',
+							},
+							params: {
+								serviceKey: '3D/hQQLa34EIssXyL96d8sUQaCs5YuG/Gqlvn59ggFLbbD138P/nxryTicBJXMnZHLtf74JrS/07XQNMjLqdbQ==',
+								numOfRows: '247',
+								pageNo: '1',
+								beginBasDt: '20221013',
+								endBasDt: '20231013',
+								resultType: 'json',
+								itmsNm: stockName,
+							},
+						}),
+					),
+				);
+
+				setStockData(responses);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setLoading(false);
+			}
+		};
 
 		if (reportId) {
-			setLoading(false);
+			fetchReportData();
 		}
+
+		fetchData();
 	}, [reportId]);
-
-	// useEffect(() => {
-	// 	const fetchData = async () => {
-	// 		setLoading(true);
-
-	// 		try {
-	// 			const responses = await Promise.all(
-	// 				stockNames.map((stockName) =>
-	// 					axios.get('https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo', {
-	// 						headers: {
-	// 							'Content-Type': 'application/json',
-	// 						},
-	// 						params: {
-	// 							serviceKey: '3D/hQQLa34EIssXyL96d8sUQaCs5YuG/Gqlvn59ggFLbbD138P/nxryTicBJXMnZHLtf74JrS/07XQNMjLqdbQ==',
-	// 							numOfRows: '247',
-	// 							pageNo: '1',
-	// 							beginBasDt: '221013',
-	// 							endBasDt: '231013',
-	// 							resultType: 'json',
-	// 							itmsNm: stockName,
-	// 						},
-	// 					}),
-	// 				),
-	// 			);
-
-	// 			setStockData(responses);
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		} finally {
-	// 			setLoading(false);
-	// 		}
-	// 	};
-	// 	fetchData();
-	// }, []);
 
 	const handleTableClick = (data) => {
 		const prices = data.data.response.body.items.item.map((item) => parseInt(item.clpr, 10));
@@ -115,23 +121,23 @@ function ResultPage() {
 	return (
 		<>
 			<Header />
-			{/* {loading ? (
+			{loading ? (
 				<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
 					<BeatLoader color='#3f51b5' loading={loading} size={20} />
 				</div>
-			) : ( */}
-			<>
-				<Grid
-					sx={{
-						margin: '30px 140px',
-						display: 'flex',
-						flexDirection: 'row',
-						alignItems: 'center',
-						gap: 3,
-						justifyContent: 'space-around',
-					}}>
-					{/* <StockStepper name={name} /> */}
-					{/* <Container sx={{ width: '397px', borderRadius: '40px', padding: '30px 40px' }}>
+			) : (
+				<>
+					<Grid
+						sx={{
+							margin: '30px 140px',
+							display: 'flex',
+							flexDirection: 'row',
+							alignItems: 'center',
+							gap: 3,
+							justifyContent: 'space-around',
+						}}>
+						{/* <StockStepper name={name} /> */}
+						{/* <Container sx={{ width: '397px', borderRadius: '40px', padding: '30px 40px' }}>
 						<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>{`${name}`}님의 최적 포트폴리오</Grid>
 						<Grid sx={GridStyle}>
 							<div>총 자산</div>
@@ -142,58 +148,58 @@ function ResultPage() {
 							<div style={InputStyle}>{duration}개월</div>
 						</Grid>
 					</Container> */}
-					<Container sx={{ width: '803px', borderRadius: '20px', padding: '20px' }}>
-						<Grid sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
-							<div style={{ fontWeight: 600, fontSize: 18 }}>추천 종목</div>
-							<Button sx={ButtonStyle}>더보기</Button>
-						</Grid>
-						<div style={{ maxHeight: '190px', overflowY: 'auto', marginTop: '8px' }}>
-							<Table sx={{ minWidth: 650 }} aria-label='stock table'>
-								<TableHead>
-									<TableRow sx={{ fontWeight: 600 }}>
-										<TableStyle>종목</TableStyle>
-										<TableStyle align='right'>종가</TableStyle>
-										<TableStyle align='right'>등락률</TableStyle>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{stockData &&
-										stockData.map((data, index) => (
-											<TableRow
-												key={index}
-												onClick={() => handleTableClick(data)}
-												sx={{
-													cursor: 'pointer',
-													'&:hover': { backgroundColor: '#f0f0f0' },
-													'&:active': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
-												}}>
-												<TableCell>{data.data.response.body.items.item[0].itmsNm}</TableCell>
-												<TableCell align='right'>
-													{parseInt(data.data.response.body.items.item[0].clpr).toLocaleString('ko-KR')}원
-												</TableCell>
-												<TableCell
-													align='right'
-													style={{
-														color: parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? 'red' : 'blue',
+						<Container sx={{ width: '803px', borderRadius: '20px', padding: '20px' }}>
+							<Grid sx={{ display: 'flex', alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+								<div style={{ fontWeight: 600, fontSize: 18 }}>추천 종목</div>
+								<Button sx={ButtonStyle}>더보기</Button>
+							</Grid>
+							<div style={{ maxHeight: '190px', overflowY: 'auto', marginTop: '8px' }}>
+								<Table sx={{ minWidth: 650 }} aria-label='stock table'>
+									<TableHead>
+										<TableRow sx={{ fontWeight: 600 }}>
+											<TableStyle>종목</TableStyle>
+											<TableStyle align='right'>종가</TableStyle>
+											<TableStyle align='right'>등락률</TableStyle>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{stockData &&
+											stockData.map((data, index) => (
+												<TableRow
+													key={index}
+													onClick={() => handleTableClick(data)}
+													sx={{
+														cursor: 'pointer',
+														'&:hover': { backgroundColor: '#f0f0f0' },
+														'&:active': { backgroundColor: 'rgba(0, 0, 0, 0.1)' },
 													}}>
-													{parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? '+' : ''}
-													{parseFloat(data.data.response.body.items.item[0].fltRt).toFixed(2)}%
-												</TableCell>
-											</TableRow>
-										))}
-								</TableBody>
-							</Table>
-						</div>
-					</Container>
-				</Grid>
-				<Grid sx={{ margin: '30px 140px' }}>
-					<div style={{ fontWeight: 600, fontSize: '20px', padding: '10px 20px' }}>주가 그래프</div>
-					<Container sx={{ borderRadius: '20px', height: '350px' }}>
-						<ApexCharts options={options} series={series} type='line' height={320} />
-					</Container>
-				</Grid>
-			</>
-			{/* )} */}
+													<TableCell>{data.data.response.body.items.item[0].itmsNm}</TableCell>
+													<TableCell align='right'>
+														{parseInt(data.data.response.body.items.item[0].clpr).toLocaleString('ko-KR')}원
+													</TableCell>
+													<TableCell
+														align='right'
+														style={{
+															color: parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? 'red' : 'blue',
+														}}>
+														{parseFloat(data.data.response.body.items.item[0].fltRt) >= 0 ? '+' : ''}
+														{parseFloat(data.data.response.body.items.item[0].fltRt).toFixed(2)}%
+													</TableCell>
+												</TableRow>
+											))}
+									</TableBody>
+								</Table>
+							</div>
+						</Container>
+					</Grid>
+					<Grid sx={{ margin: '30px 140px' }}>
+						<div style={{ fontWeight: 600, fontSize: '20px', padding: '10px 20px' }}>주가 그래프</div>
+						<Container sx={{ borderRadius: '20px', height: '350px' }}>
+							<ApexCharts options={options} series={series} type='line' height={320} />
+						</Container>
+					</Grid>
+				</>
+			)}
 		</>
 	);
 }
