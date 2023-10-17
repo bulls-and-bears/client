@@ -7,38 +7,43 @@ import axios from 'axios';
 function PortfolioPage() {
 	const location = useLocation();
 	const name = location.state?.name;
+
 	const [amount, setAmount] = useState('');
 	const [duration, setDuration] = useState('');
 	const navigate = useNavigate();
 	const [amountLabel, setAmountLabel] = useState('금액');
 	const [durationLabel, setDurationLabel] = useState('날짜');
-	const [reportId, setReportId] = useState(null);
+	const [reportId, setReportId] = useState();
 	const [totalDividend, setTotalDividend] = useState();
 
-	// const onClickResult = async () => {
+	const onClickResult = () => {
+		navigate('/result', { state: { reportId } });
+	};
+
+	// const postToBackend = () => {
 	// 	axios
 	// 		.post('api/v1/report/', { amount, duration }, { withCredentials: true })
 	// 		.then((response) => {
-	// 			console.log(response);
+	// 			console.log('Success:', response);
+
 	// 			console.log(response.data.reportId);
 	// 			console.log(response.data.totalDividend);
 	// 		})
 	// 		.catch((error) => {
-	// 			console.log(error);
+	// 			console.error('Error:', error);
 	// 		});
-	// };
 
-	const postToBackend = () => {
-		axios
-			.post('api/v1/report/', { amount, duration }, { withCredentials: true })
-			.then((response) => {
-				console.log('Success:', response.data);
-				setReportId(response.data.reportId);
-				setTotalDividend(response.data.totalDividend);
-			})
-			.catch((error) => {
-				console.error('Error:', error);
-			});
+	// };
+	const postToBackend = async () => {
+		try {
+			const response = await axios.post('api/v1/report/', { amount, duration }, { withCredentials: true });
+
+			console.log('Success:', response);
+			console.log(response.data.reportId);
+			console.log(response.data.totalDividend);
+		} catch (error) {
+			console.error('Error:', error);
+		}
 	};
 
 	useEffect(() => {
@@ -136,8 +141,7 @@ function PortfolioPage() {
 									background: '#3671ba',
 								},
 							}}
-							// onClick={onClickResult}
-						>
+							onClick={onClickResult}>
 							조회하기
 						</Button>
 					</div>
