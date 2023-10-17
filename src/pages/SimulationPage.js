@@ -9,7 +9,7 @@ function SimulationPage() {
 	return (
 		<>
 			<Header />
-			<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>{`${name}`}님의 최적 포트폴리오</Grid>
+			<Grid sx={{ fontSize: 20, fontWeight: 600, marginBottom: '25px' }}>님의 최적 포트폴리오</Grid>
 		</>
 	);
 }
