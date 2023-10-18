@@ -28,6 +28,7 @@ function PortfolioPage() {
 			console.log(response.data.reportId);
 			console.log(response.data.totalDividend);
 			setReportId(response.data.reportId);
+			setTotalDividend(response.data.totalDividend);
 		} catch (error) {
 			console.error('Error:', error);
 		}
@@ -48,6 +49,12 @@ function PortfolioPage() {
 		setAmount(selectedAmount);
 
 		switch (selectedAmount) {
+			case 100000:
+				setAmountLabel('10만원');
+				break;
+			case 500000:
+				setAmountLabel('50만원');
+				break;
 			case 1000000:
 				setAmountLabel('100만원');
 				break;
@@ -99,6 +106,8 @@ function PortfolioPage() {
 							<FormControl sx={{ width: 180 }}>
 								<InputLabel id='amount-label'>자산</InputLabel>
 								<Select labelId='amount-label' id='amount' value={amount} label='amount' onChange={amountChange}>
+									<MenuItem value={100000}>10만원</MenuItem>
+									<MenuItem value={500000}>50만원</MenuItem>
 									<MenuItem value={1000000}>100만원</MenuItem>
 									<MenuItem value={5000000}>500만원</MenuItem>
 									<MenuItem value={10000000}>1,000만원</MenuItem>
